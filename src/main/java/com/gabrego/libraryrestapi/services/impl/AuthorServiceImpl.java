@@ -6,6 +6,7 @@ import com.gabrego.libraryrestapi.services.AuthorService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -30,5 +31,10 @@ public class AuthorServiceImpl implements AuthorService {
                         authorRepository.findAll().spliterator(),
                         false)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Author> findOne(Long id) {
+        return authorRepository.findById(id);
     }
 }
