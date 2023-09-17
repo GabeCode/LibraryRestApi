@@ -1,4 +1,4 @@
-package com.gabrego.libraryrestapi.domain;
+package com.gabrego.libraryrestapi.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

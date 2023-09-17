@@ -1,6 +1,6 @@
 package com.gabrego.libraryrestapi.repositories;
 
-import com.gabrego.libraryrestapi.domain.Author;
+import com.gabrego.libraryrestapi.domain.entities.Author;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

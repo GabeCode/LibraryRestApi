@@ -1,7 +1,7 @@
 package com.gabrego.libraryrestapi.repositories;
 
 import com.gabrego.libraryrestapi.TestDataUtil;
-import com.gabrego.libraryrestapi.domain.Author;
+import com.gabrego.libraryrestapi.domain.entities.Author;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

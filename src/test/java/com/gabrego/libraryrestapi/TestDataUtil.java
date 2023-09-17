@@ -1,7 +1,7 @@
 package com.gabrego.libraryrestapi;
 
-import com.gabrego.libraryrestapi.domain.Author;
-import com.gabrego.libraryrestapi.domain.Book;
+import com.gabrego.libraryrestapi.domain.entities.Author;
+import com.gabrego.libraryrestapi.domain.entities.Book;
 
 public final class TestDataUtil {
     private TestDataUtil() {}
