@@ -4,7 +4,6 @@ import com.gabrego.libraryrestapi.domain.dto.AuthorDto;
 import com.gabrego.libraryrestapi.domain.entities.Author;
 import com.gabrego.libraryrestapi.mappers.Mapper;
 import com.gabrego.libraryrestapi.services.AuthorService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,7 @@ public class AuthorController {
     @PostMapping()
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author){
         Author authorEntity = authorMapper.mapFrom(author);
-        authorEntity = authorService.createAuthor(authorEntity);
+        authorEntity = authorService.saveAuthor(authorEntity);
         return new ResponseEntity<>(authorMapper.mapTo(authorEntity), HttpStatus.CREATED);
     }
 
@@ -48,5 +47,19 @@ public class AuthorController {
             AuthorDto authorDto = authorMapper.mapTo(author);
             return new ResponseEntity<>(authorDto,HttpStatus.OK);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<AuthorDto> fullUpdateAuthor(@PathVariable("id") Long id, @RequestBody AuthorDto authorDto) {
+        if (!authorService.isExist(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        authorDto.setId(id);
+        Author author = authorMapper.mapFrom(authorDto);
+        Author savedAuthor = authorService.saveAuthor(author);
+        return new ResponseEntity<>(
+                authorMapper.mapTo(savedAuthor),
+                HttpStatus.OK
+        );
     }
 }

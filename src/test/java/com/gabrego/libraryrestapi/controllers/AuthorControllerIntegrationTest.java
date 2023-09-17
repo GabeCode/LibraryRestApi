@@ -1,6 +1,5 @@
 package com.gabrego.libraryrestapi.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gabrego.libraryrestapi.TestDataUtil;
 import com.gabrego.libraryrestapi.domain.entities.Author;
@@ -81,7 +80,7 @@ public class AuthorControllerIntegrationTest {
     @Test
     public void testThatListAuthorsReturnsListOfAuthors() throws Exception {
         Author testAuthor = TestDataUtil.createTestAuthorA();
-        authorService.createAuthor(testAuthor);
+        authorService.saveAuthor(testAuthor);
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +96,7 @@ public class AuthorControllerIntegrationTest {
     @Test
     public void testThatGetAuthorReturnsHttpStatus200OkWhenAuthorExist() throws Exception {
         Author testAuthor = TestDataUtil.createTestAuthorA();
-        authorService.createAuthor(testAuthor);
+        authorService.saveAuthor(testAuthor);
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +118,7 @@ public class AuthorControllerIntegrationTest {
     @Test
     public void testThatGetAuthorReturnsAuthorWhenAuthorExist() throws Exception {
         Author testAuthor = TestDataUtil.createTestAuthorA();
-        authorService.createAuthor(testAuthor);
+        authorService.saveAuthor(testAuthor);
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -129,6 +128,57 @@ public class AuthorControllerIntegrationTest {
                 MockMvcResultMatchers.jsonPath("$.name").value(testAuthor.getName())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.age").value(testAuthor.getAge())
+        );
+    }
+
+    @Test
+    public void testThatFullUpdateAuthorReturnsHttpStatus200OkWhenAuthorExist() throws Exception {
+        Author testAuthor = TestDataUtil.createTestAuthorA();
+        authorService.saveAuthor(testAuthor);
+        testAuthor.setAge(80);
+        String authorJson = objectMapper.writeValueAsString(testAuthor);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatFullUpdateAuthorReturnsHttpStatus404NotFoundWhenNoAuthorExist() throws Exception {
+        Author testAuthor = TestDataUtil.createTestAuthorA();
+        authorService.saveAuthor(testAuthor);
+        testAuthor.setAge(80);
+        String authorJson = objectMapper.writeValueAsString(testAuthor);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    public void testThatFullUpdateAuthorUpdatesExistingAuthor() throws Exception {
+        Author testAuthor = TestDataUtil.createTestAuthorA();
+        testAuthor = authorService.saveAuthor(testAuthor);
+
+        Author authorToUpdate = TestDataUtil.createTestAuthorB();
+
+        String authorJson = objectMapper.writeValueAsString(authorToUpdate);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testAuthor.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value(authorToUpdate.getName())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.age").value(authorToUpdate.getAge())
         );
     }
 }
