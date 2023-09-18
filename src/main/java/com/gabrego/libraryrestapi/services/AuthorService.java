@@ -14,4 +14,6 @@ public interface AuthorService {
     Optional<Author> findOne(Long id);
 
     boolean isExist(Long id);
+
+    Author partialUpdate(Long id, Author author);
 }

@@ -170,7 +170,58 @@ public class AuthorControllerIntegrationTest {
 
         String authorJson = objectMapper.writeValueAsString(authorToUpdate);
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/authors/1")
+                MockMvcRequestBuilders.put("/authors/"+testAuthor.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testAuthor.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value(authorToUpdate.getName())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.age").value(authorToUpdate.getAge())
+        );
+    }
+
+    @Test
+    public void testThatPartialUpdateAuthorReturnsHttpStatus200OkWhenAuthorExist() throws Exception {
+        Author testAuthor = TestDataUtil.createTestAuthorA();
+        testAuthor = authorService.saveAuthor(testAuthor);
+
+        Author authorToUpdate = TestDataUtil.createTestAuthorB();
+
+        String authorJson = objectMapper.writeValueAsString(authorToUpdate);
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch("/authors/"+testAuthor.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatPartialUpdateAuthorReturnsHttpStatus404NotFoundWhenNoAuthorExist() throws Exception {
+        Author authorToUpdate = TestDataUtil.createTestAuthorB();
+        String authorJson = objectMapper.writeValueAsString(authorToUpdate);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/"+authorToUpdate.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    public void testThatPartialUpdateExistingAuthorReturnsUpdatedAuthor() throws Exception {
+        Author testAuthor = TestDataUtil.createTestAuthorA();
+        testAuthor = authorService.saveAuthor(testAuthor);
+
+        Author authorToUpdate = TestDataUtil.createTestAuthorB();
+
+        String authorJson = objectMapper.writeValueAsString(authorToUpdate);
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch("/authors/"+testAuthor.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(authorJson)
         ).andExpect(
