@@ -16,4 +16,6 @@ public interface AuthorService {
     boolean isExist(Long id);
 
     Author partialUpdate(Long id, Author author);
+
+    void delete(Long id);
 }
