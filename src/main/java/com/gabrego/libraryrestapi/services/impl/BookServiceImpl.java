@@ -3,6 +3,8 @@ package com.gabrego.libraryrestapi.services.impl;
 import com.gabrego.libraryrestapi.domain.entities.Book;
 import com.gabrego.libraryrestapi.repositories.BookRepository;
 import com.gabrego.libraryrestapi.services.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +34,11 @@ public class BookServiceImpl implements BookService {
                         bookRepository.findAll().spliterator(),
                         false
                 ).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<Book> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
     @Override
